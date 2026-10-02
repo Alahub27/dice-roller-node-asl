@@ -12,7 +12,7 @@ const minorVersion = 3
 
 // Use Express to publish static HTML, CSS, and JavaScript files that run in the browser. 
 app.use(express.static(__dirname + '/static'))
-app.use(cors({ origin: '*' }))
+app.use(cors({ origin: 'https://your-frontend-domain.com' }))
 
 // The app.get functions below are being processed in Node.js running on the server.
 app.get('/version', (request, response) => {
@@ -27,17 +27,6 @@ app.get('/api/ping', (request, response) => {
 	response.send('ping response')
 })
 
-// Add x and y which are both passed in on the URL. 
-app.get('/add-two-integers', (request, response) => {
-	console.log('Calling "/add-two-integers" on the Node.js server.')
-	var inputs = url.parse(request.url, true).query
-	let x = parseInt(inputs.x)
-	let y = parseInt(inputs.y)
-	let sum = x + y
-	response.type('text/plain')
-	response.send(sum.toString())
-})
-
 // Roll a die on the server. The number of sides is passed in on the URL,
 // e.g. /roll-dice?sides=6 or /roll-dice?sides=20. Returns a number from 1 to sides.
 app.get('/roll-dice', (request, response) => {
@@ -49,6 +38,95 @@ app.get('/roll-dice', (request, response) => {
 	response.type('text/plain')
 	response.send(roll.toString())
 })
+
+
+// ----------------------------------------
+// Wake-up API
+// ----------------------------------------
+
+app.get("/api/wakeup", (req, res) => {
+
+    res.json({
+        status: "awake",
+        message: "Dice Roller Node.js server is running"
+    });
+
+});
+
+
+// ----------------------------------------
+// Roll one die
+// Example: /api/roll/6
+// ----------------------------------------
+
+app.get("/api/roll/:sides", (req, res) => {
+
+    const sides = parseInt(req.params.sides);
+
+    if (isNaN(sides) || sides < 2) {
+
+        return res.status(400).json({
+            error: "Number of sides must be at least 2."
+        });
+
+    }
+
+    // RANDOM NUMBER IS GENERATED ON THE SERVER
+    const roll =
+        Math.floor(Math.random() * sides) + 1;
+
+    res.json({
+        sides: sides,
+        roll: roll
+    });
+
+});
+
+
+// ----------------------------------------
+// Roll multiple dice
+// Example: /api/roll/2/6
+// ----------------------------------------
+
+app.get("/api/roll/:dice/:sides", (req, res) => {
+
+    const dice =
+        parseInt(req.params.dice);
+
+    const sides =
+        parseInt(req.params.sides);
+
+    if (
+        isNaN(dice) ||
+        isNaN(sides) ||
+        dice < 1 ||
+        sides < 2
+    ) {
+
+        return res.status(400).json({
+            error: "Invalid number of dice or sides."
+        });
+
+    }
+
+    const rolls = [];
+
+    for (let i = 0; i < dice; i++) {
+
+        const roll =
+            Math.floor(Math.random() * sides) + 1;
+
+        rolls.push(roll);
+    }
+
+    res.json({
+        dice: dice,
+        sides: sides,
+        rolls: rolls
+    });
+
+});
+
 
 // Test a variety of functions.
 app.get('/test', (request, response) => {
