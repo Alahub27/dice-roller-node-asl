@@ -10,9 +10,9 @@ const port = process.env.PORT || 3000
 const majorVersion = 1
 const minorVersion = 3
 
-// Use Express to publish static HTML, CSS, and JavaScript files that run in the browser. 
+// code will cause cors error if the origin is not set to the correct domain.
 app.use(express.static(__dirname + '/static'))
-app.use(cors({ origin: 'https://your-frontend-domain.com' }))
+app.use(cors({ origin: '*' }))
 
 // The app.get functions below are being processed in Node.js running on the server.
 app.get('/version', (request, response) => {
