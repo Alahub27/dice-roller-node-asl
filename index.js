@@ -10,9 +10,16 @@ const port = process.env.PORT || 3000
 const majorVersion = 1
 const minorVersion = 3
 
-// code will cause cors error if the origin is not set to the correct domain.
+
 app.use(express.static(__dirname + '/static'))
+//code that will execute the static web applicaton and node js server correctly
+//When the user presses roll dice button, the request will be sent to the node js server and the response will be sent back to the static web application displaying the result of the dice roll.
 app.use(cors({ origin: '*' }))
+
+// The CORS code is commented out, but when not commented and commenting out the line of code above, will cause cors error if the origin is not set to the correct domain.
+//This means when the user presses the roll dice buttton, it will not work because the request will be blocked by the browser due to cors policy.
+
+//app.use(cors({ origin: 'https://your-frontend-domain.co ' }))
 
 // The app.get functions below are being processed in Node.js running on the server.
 app.get('/version', (request, response) => {
