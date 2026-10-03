@@ -1,3 +1,4 @@
+//Credits to ChatGPT for modifying  and providing the code to work with the static web application and node js server correctly.
 const express = require('express')
 app = express()
 
